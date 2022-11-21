@@ -10,9 +10,9 @@ app.use(bodyParser.json({limit: '500kb'}));
 app.use(express.json())
 app.use(cookieParser())
 
-// 利用该配置允许该地址写入cookie
+// 利用该配置允许地址跨域访问接口以及写入cookie
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: ['http://172.16.75.224:3000','http://localhost:3000'],
   // 允许跨域情况下发送cookie
   credentials: true,
   maxAge: '1728000'
@@ -25,5 +25,5 @@ app.use("/api/users",usersRouter)
 app.use("/api/auth",authRouter)
 
 app.listen(8008,()=>{
-  console.log('server is running at http://localhost:8008')
+  console.log('server is running')
 })

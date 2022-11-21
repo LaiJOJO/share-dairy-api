@@ -1,7 +1,6 @@
 import db from '../db/db.js'
 import jwt from 'jsonwebtoken'
 import getRandom from '../units/random.js'
-// import put from '../units/ssh2.js'
 
 // 获取所有已发布文章
 export const getPosts = function (req, res) {
@@ -50,9 +49,20 @@ export const getPost = function (req, res) {
   })
 }
 
+// 根据params参数获取草稿
+export const getDraft = function (req, res) {
+  const token = req.cookies.access_token
+  if (!token) return res.status(401).send('请登录后进行操作 !')
+  let draftId = req.params.id
+  const str = 'SELECT posts.id,`title`,`username`,`description`,`cat`,`date`,`status`,posts.img,users.img AS userImg FROM users JOIN posts ON users.id = posts.uid WHERE posts.id = ? AND status = "draft"'
+  db.query(str, [draftId], (err, data) => {
+    if (err) return res.status(500).send(err)
+    res.status(200).send(data[0])
+  })
+}
+
 // 上传图片
 export const uploadImg = function (req, res) {
-  // put('H:\\Git仓库/demo_blog/client/public/uploads/1667477179761-8460933241110664.png','/images/1667477179761-8460933241110664.png')
   const token = req.cookies.access_token
   if (!token) return res.status(401).send('请登录后进行操作 !')
   jwt.verify(token, 'privateKey', function (err, publisherId) {
