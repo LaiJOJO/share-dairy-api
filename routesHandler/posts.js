@@ -67,6 +67,9 @@ export const uploadImg = function (req, res) {
   if (!token) return res.status(401).send('请登录后进行操作 !')
   jwt.verify(token, 'privateKey', function (err, publisherId) {
     if (err) res.status(403).send('非创作者无法进行操作 !')
+    // 上传服务器的返回值
+    /* const imgUrl = 'http://192.168.175.131:3001/images/blog/'+req.file?.filename
+    res.status(200).send(imgUrl) */
     res.status(200).send(req.file?.filename)
   });
 }

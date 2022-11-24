@@ -65,6 +65,10 @@
 
 
 ## 优化
+ **(
+  图片连接返回修改如下(routesHandler/posts.js) ：'http://192.168.175.131:3001/images/blog/'+req.file.filename
+ 上传路径修改为(routes/posts.js) : '../../storage/images/blog' (自己创建的保存图片的文件夹)
+ )
   1. 部署nodejs到服务器后，将文件保存路径修改为服务器指定文件夹，将拼接文件名和服务器文件夹地址的字符串保存到数据库，之后获取时只需要请求地址获取图片即可
   2. nodejs在Linux的路径以index.js为基准，无论哪个文件的代码都是
   3. 只有域名对应的domain才能写入cookie，因此只有都部署到服务器上才能实现cookie写入

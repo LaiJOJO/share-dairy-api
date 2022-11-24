@@ -7,6 +7,8 @@ const storage = multer.diskStorage({
   // 指定路径
   destination: function (req, file, cb) {
     cb(null, '../client/public/uploads')
+    // 部署服务器时的存放位置
+    // cb(null, '../../storage/images/blog') 
   },
   // 指定文件名，时间戳标记防止冲突
   filename: function (req, file, cb) {
