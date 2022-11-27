@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import { changeImg,getUserinfo,getUserRecommentPosts,changeUsername,changeEmail,changePassword,getUserPubisheds,getUserDrafts } from '../routesHandler/users.js'
+import { changeImg,getUserinfo,getUserRecommentPosts,changeUsername,changeEmail,changePassword,getUserPubisheds,getUserDrafts,getUserCollections } from '../routesHandler/users.js'
 
 const router = Router()
 router.get('/userinfo/:username',getUserinfo)
@@ -10,6 +10,7 @@ router.post('/changepassword',changePassword)
 router.post('/changeimg',changeImg)
 router.get('/getuserpublisheds',getUserPubisheds)
 router.get('/getusedrafts',getUserDrafts)
+router.get('/getusercollections',getUserCollections)
 
 
 export default router

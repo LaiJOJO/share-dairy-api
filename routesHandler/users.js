@@ -2,6 +2,7 @@ import db from "../db/db.js"
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 
+// 这里检验一次token后续不需要进行token的验证
 // 获取用户邮箱头像等信息
 export const getUserinfo = function (req, res) {
   const token = req.cookies.access_token
@@ -129,7 +130,7 @@ export const changeImg = async function (req, res) {
 
   if (!token) return res.status(401).send('请登录后进行操作 !')
   jwt.verify(token, 'privateKey', function (err, access_token) {
-    if(err) return res.status(403).send('cookie错误,无权限操作 !')
+    if (err) return res.status(403).send('cookie错误,无权限操作 !')
     let getUserInfo = "select * from users where id = ?"
     // 检测用户是否存在
     db.query(getUserInfo, access_token.id, (err, result) => {
@@ -163,7 +164,6 @@ export const getUserPubisheds = function (req, res) {
       res.status(200).send({ publisheds: pageData, length: data.length })
     })
   })
-
 }
 
 // 获取指定用户草稿
@@ -183,4 +183,23 @@ export const getUserDrafts = function (req, res) {
     })
   })
 
+}
+
+// 获取用户收藏文章
+export const getUserCollections = function (req, res) {
+  const token = req.cookies.access_token
+  if (!token) return res.status(401).send('请登录后进行操作 !')
+  const { username, page, pagesize } = req.query
+  // 检测用户名
+  let getUserInfo = "select * from users where username = ?"
+  db.query(getUserInfo, username, (err, result) => {
+    if (err) return res.status(500).send(err)
+    if (!result.length) return res.status(403).send('用户不存在 !')
+    const getStr = 'SELECT posts.id,`title`,`description`,`img` FROM posts JOIN collect ON posts.id = collect.postid WHERE collect.userid = ? AND iscollect = 1 '
+    db.query(getStr,result[0].id, (err, data) => {
+      if (err) return res.status(500).send(err)
+      const pageData = data.length > (+pagesize) ? data.slice((+page) * pagesize, (+page) * (+pagesize) + (+pagesize)) : data
+      res.status(200).send({ collections: pageData, length: data.length, userId: result[0].id })
+    })
+  })
 }
