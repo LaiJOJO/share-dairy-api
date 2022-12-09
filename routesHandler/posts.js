@@ -16,10 +16,10 @@ export const getPosts = function (req, res) {
 
 // 获取模糊查询关键词文章
 export const getSearchPosts = function (req, res) {
-  let { keyword , page, pagesize} = req.query
+  let { keyword, page, pagesize } = req.query
   let keywords = "%" + keyword + "%"
   let searchStr = 'SELECT * FROM posts WHERE (description like ? OR title like ?) AND status = "published"'
-  db.query(searchStr, [keywords,keywords], (err, data) => {
+  db.query(searchStr, [keywords, keywords], (err, data) => {
     if (err) return res.status(500).send(err)
     const pageData = data.length > pagesize ? data.slice((+page * pagesize), ((+page + 1) * (+pagesize))) : data
     res.status(200).send({ posts: pageData, dataLength: data.length })
@@ -68,10 +68,22 @@ export const uploadImg = function (req, res) {
   jwt.verify(token, 'privateKey', function (err, publisherId) {
     if (err) res.status(403).send('非创作者无法进行操作 !')
     // 上传服务器的返回值
-    /* const imgUrl = 'http://192.168.175.131:3001/images/blog/'+req.file?.filename
-    res.status(200).send(imgUrl) */
-    res.status(200).send(req.file?.filename)
+    const imgUrl = 'http://192.168.175.131:3001/images/blog/'+req.file?.filename
+    res.status(200).send(imgUrl)
+    // res.status(200).send(req.file?.filename)
   });
+}
+// 上传富文本图片
+export const uploadDescImg = function (req, res) {
+  const token = req.cookies.access_token
+  if (!token) return res.status(401).send('请登录后进行操作 !')
+  jwt.verify(token, 'privateKey', function (err, publisherId) {
+    if (err) res.status(403).send('非创作者无法进行操作 !')
+    // 上传服务器的返回值
+    const imgUrl = 'http://192.168.175.131:3001/images/blog/quill/' + req.file?.filename
+    res.status(200).send(imgUrl)
+    // res.status(200).send(req.file?.filename)
+  })
 }
 
 // 创建文章，需要在线才能添加
