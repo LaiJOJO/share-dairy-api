@@ -80,7 +80,7 @@ export const changeEmail = function (req, res) {
     if (result[0].email !== oldEmail) return res.status(404).send('原邮箱不正确')
     // 注意数据库返回的是数组，数组首个元素的对象包含所筛选数据
     let isCorrect = bcrypt.compareSync(password, result[0].password)
-    if (!isCorrect) return res.status(403).send({ message: '密码错误 !' })
+    if (!isCorrect) return res.status(403).send({ message: '密码错误 !',em:result[0].email,oldEmail:oldEmail })
 
     // 密码通过后进行邮箱更换
     const changeEmailStr = 'UPDATE users SET email = ? WHERE id = ?'
@@ -120,7 +120,7 @@ export const changePassword = function (req, res) {
         sameSite: "none",
         secure: true
       })
-      res.status(200).send('邮箱修改成功 !')
+      res.status(200).send('密码修改成功 !')
     })
   })
 }
